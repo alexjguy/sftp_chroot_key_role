@@ -15,7 +15,7 @@ There are several variables that should be set and overriden for this role.
 
 * chroot_home_directory - This will create a directory in / in which the jailed user directories will be into. Ex: /sftp/user1, /sftp/user2 .
 * sftp_group_name - The OS group that allows users to login through sftp.
-* users - a dictionary that contains an array of key value pairs.
+* users - a dictionary that contains an array of key value pairs:
 
    name - the name of the user.
 
