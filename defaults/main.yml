@@ -1,0 +1,11 @@
+---
+chroot_home_directory: sftp 
+sftp_group_name: sftpusers
+users:
+  - name: user1 
+    ssh-public-key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDG46K5+gUSRJnzkgGhLBxUdtpUR0mwonMdPmgNSVjrWCpqFKaP1W0tL9VAoLbSFKwdwI7wi2yZ2qzWtNrtcCDAELhje7HwLY8pkUIWi1pNt8tcI1U9wZAfL0yUYY/jZLB0p5qU5YIskpCAEOU+oK9b/mM+j6JEUDX7gfZt59ADRVwSbsRj1QCac85WTAHh5/hm4Ne21+VQTlIyASzYmAhXp+3e1Ij+SkPs8E2Gs8GsgyGLcqNvwWURE35OgEDT12bjdRqC39rHtnv9xAE6EYHEC5ldz92+P+aZcBTE7absBtRWMGn3R53SoCR9twtd6Rsvc7wSvocw8s//kvlF7oEBX+wjJNe2z3dkv//WqgaFDvNGf5fhX+lvDVzvjqxQ5pXQseS0XoqD8ZHFrXGzgy9MCgxqh+7IEU/1R8qyL20b4gAPSxUL02i8zKhTNwZ3yCbDTSknsoZqmOmtGBH8WiSVwJ2Zw+6KtMpKaTPeVI/iB0p6e8qa1u6biQXRkRvhUQ9pew7e7Zq9/1P/KAKnh4fxj79yrX49zd7X+1FKXZttegvidReJTTLB3pJWB7erRN8re6Q+hYqaGK1SF5lz4PylI4O7gls42NpYLH2XMxzpa3SfZB1WSvPEeNtdb/QsHFUMrJniMGzwJJRMid1fFqEAH34xnZ6tAMxn4kKSYVG62w=='
+    home_directory: /home/user1
+    ch_dirs:
+      - dir1 
+      - dir2 
+      - dir3

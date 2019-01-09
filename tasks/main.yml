@@ -1,0 +1,76 @@
+---
+- name: Create group
+  group:
+    name: "{{ sftp_group_name }}"
+    state: present
+- name: Update skel with .ssh
+  file:
+    path: /etc/skel/.ssh
+    mode: 700
+    state: directory
+- name: Update skel with authorized_keys
+  file:
+    state: touch
+    path: /etc/skel/.ssh/authorized_keys
+    mode: 600
+- name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      Match Group {{ sftp_group_name }}
+      X11Forwarding no
+      AllowTcpForwarding no
+      PermitTTY no
+      ForceCommand internal-sftp
+      ChrootDirectory /{{ chroot_home_directory }}/%u
+  notify: restart_sshd
+- name: Debug dictionary
+  debug:
+    msg: "This step will create user {{ item.name }} with home directory {{item.home_directory}}"
+  loop: "{{ users|flatten(levels=1) }}"
+- name: Creating users and home directories
+  user:
+    name: "{{ item.name }}"
+    shell: /bin/false
+    group: "{{ sftp_group_name }}"
+    home: "{{ item.home_directory }}"
+    create_home: yes
+  loop: "{{ users|flatten(levels=1) }}"
+- name: Create base chroot directory
+  file:
+    state: directory
+    mode: 0701
+    owner: root
+    group: "{{ sftp_group_name }}"
+    path: "/{{ chroot_home_directory }}"
+- name: Create base chroot directory for user
+  file:
+    state: directory
+    mode: 0701
+    owner: root
+    group: "{{ sftp_group_name }}"
+    path: "/{{ chroot_home_directory }}/{{ item.name}}"
+  loop: "{{ users|flatten(levels=1) }}"
+- name: Debug subelements piece
+  debug:
+    msg: "Item name : {{item.0.name}} , item1: {{ item.1 }}"
+  with_subelements:
+    - "{{ users }}"
+    - ch_dirs
+  tags: debug
+- name: Create the directories in which the user can write
+  file:
+    state: directory
+    mode: 0444
+    path: "/{{ chroot_home_directory }}/{{ item.0.name}}/{{ item.1 }}"
+  with_subelements:
+    - "{{ users }}"
+    - ch_dirs
+- name: Create the file S3NotMounted that will be used to detect when S3 is mounted
+  file:
+    state: touch
+    mode: 0444
+    path: "/{{ chroot_home_directory }}/{{ item.0.name}}/{{ item.1 }}/S3NotMounted"
+  with_subelements:
+    - "{{ users }}"
+    - ch_dirs
