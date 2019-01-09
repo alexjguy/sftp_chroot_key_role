@@ -1,38 +1,60 @@
-Role Name
+SFTP Chroot Public Key
 =========
 
-A brief description of the role goes here.
+Ansible role that configures ubuntu for SFTP with users, chrooted directories and public key auth. This roles denies the from the defind group other type of login except sftp.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role can be run on Ubuntu Server. It was tested on Ubuntu 18.06.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+There are several variables that should be set and overriden for this role.
+
+chroot_home_directory - This will create a directory in / in which the jailed user directories will be into. Ex: /sftp/user1, /sftp/user2 .
+sftp_group_name - The OS group that allows users to login through sftp.
+users - a dictionary that contains an array of key value pairs.
+ name - the name of the user
+ ssh-public-key - the public key that will be added un authorised_keys
+ home_directory - the home directory of the user
+ ch_dirs - the directories created and in which the user can write into after he logs into ssh. These will be for example in the path: /sftp/user1/dir1, /sftp/user1/dir2, etc.
+
+---
+chroot_home_directory: sftp 
+sftp_group_name: sftpusers
+users:
+  - name: user1 
+    ssh-public-key: 'ssh-rsa-key'
+    home_directory: /home/user1
+    ch_dirs:
+      - dir1 
+      - dir2 
+      - dir3
+  - name: user2
+    ssh-public-key: 'ssh-rsa-key'
+    home_directory: /home/user2
+    ch_dirs:
+      - dir1 
+      - dir2 
+      - dir3
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: sftp
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: alexjgui.sftp_ch_pk, tags: sftp }
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+None
