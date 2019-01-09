@@ -20,7 +20,8 @@ users - a dictionary that contains an array of key value pairs.
  ssh-public-key - the public key that will be added un authorised_keys
  home_directory - the home directory of the user
  ch_dirs - the directories created and in which the user can write into after he logs into ssh. These will be for example in the path: /sftp/user1/dir1, /sftp/user1/dir2, etc.
-
+ 
+```
 ---
 chroot_home_directory: sftp 
 sftp_group_name: sftpusers
@@ -39,6 +40,7 @@ users:
       - dir1 
       - dir2 
       - dir3
+```
 
 Dependencies
 ------------
