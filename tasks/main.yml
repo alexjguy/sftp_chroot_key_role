@@ -3,12 +3,17 @@
   group:
     name: "{{ sftp_group_name }}"
     state: present
+- name: retrieve status for skel/.ssh
+  stat:
+    path: /etc/skel/.ssh
+  register: reg_ssh
 - name: Update skel with .ssh
   file:
     path: /etc/skel/.ssh
     force: no
     mode: 0700
     state: directory
+  when: not reg_ssh.stat.exists
 - name: Retrieve status for authorized_keys
   stat:
     path: "/etc/skel/.ssh/authorized_keys"
