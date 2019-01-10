@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - alexjj.demo_repo
+    - sftp_chroot_pkey
