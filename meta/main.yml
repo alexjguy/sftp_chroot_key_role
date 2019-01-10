@@ -1,0 +1,18 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: alexjguy
+  description: Ansible role that configures ubuntu for SFTP with users, chrooted directories and public key auth.
+  company: "AlexJ"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+  galaxy_tags:
+    - sftp
+allow_duplicates: true
