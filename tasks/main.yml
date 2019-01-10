@@ -7,9 +7,10 @@
   file:
     path: /etc/skel/.ssh
     force: no
-    mode: 700
+    mode: 0700
     state: directory
-- stat:
+- name: Retrieve status for authorized_keys
+  stat:
     path: "/etc/skel/.ssh/authorized_keys"
   register: authorized_keys
 - name: Update skel with authorized_keys
@@ -17,8 +18,8 @@
     state: touch
     force: no
     path: /etc/skel/.ssh/authorized_keys
-    mode: 600
-  when: authorized_keys.stat.exists == False
+    mode: 0600
+  when: not authorized_keys.stat.exists
 - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
   blockinfile:
     path: /etc/ssh/sshd_config
@@ -39,7 +40,8 @@
     home: "{{ item.home_directory }}"
     create_home: yes
   loop: "{{ users|flatten(levels=1) }}"
-- stat:
+- name: Retrieve status for chroot base dir
+  stat:
     path: "/{{ chroot_home_directory }}"
   register: reg_chroot_home_directory
 - name: Create base chroot directory
@@ -50,15 +52,16 @@
     owner: root
     group: "{{ sftp_group_name }}"
     path: "/{{ chroot_home_directory }}"
-  when: reg_chroot_home_directory.stat.exists == False
-- stat:
-    path: "/{{ chroot_home_directory }}/{{ item.name}}"
+  when: not reg_chroot_home_directory.stat.exists
+- name: Retrieve status for user base dir
+  stat:
+    path: "/{{ chroot_home_directory }}/{{ item.name }}"
   register: reg_base_dir_for_user
   loop: "{{ users|flatten(levels=1) }}"
   tags: debug
 - name: Debug register loop
   debug:
-    msg: "Dir {{ item.item.name }} exists {{ item.stat.exists}}"
+    msg: "Dir {{ item.item.name }} exists {{ item.stat.exists }}"
   tags: debug
   loop: "{{ reg_base_dir_for_user.results }}"
 - name: Create base chroot directory for user
@@ -68,17 +71,18 @@
     mode: 0701
     owner: root
     group: "{{ sftp_group_name }}"
-    path: "/{{ chroot_home_directory }}/{{ item.item.name}}"
+    path: "/{{ chroot_home_directory }}/{{ item.item.name }}"
   loop: "{{ reg_base_dir_for_user.results|flatten(levels=1) }}"
-  when: item.stat.exists == False 
+  when: not item.stat.exists
 - name: Debug subelements piece
   debug:
-    msg: "Item name : {{item.0.name}} , item1: {{ item.1 }}"
+    msg: "Item name : {{ item.0.name }} , item1: {{ item.1 }}"
   with_subelements:
     - "{{ users }}"
     - ch_dirs
   tags: debug
-- stat:
+- name: Retrieve status for the user writable directories
+  stat:
     path: "/{{ chroot_home_directory }}/{{ item.0.name}}/{{ item.1 }}"
   with_subelements:
     - "{{ users }}"
@@ -97,4 +101,4 @@
     mode: 0444
     path: "{{ item.invocation.module_args.path }}" 
   loop: "{{ reg_user_writable_dirs.results }}"
-  when: item.stat.exists == False 
+  when: not item.stat.exists
