@@ -83,7 +83,7 @@
   tags: debug
 - name: Retrieve status for the user writable directories
   stat:
-    path: "/{{ chroot_home_directory }}/{{ item.0.name}}/{{ item.1 }}"
+    path: "/{{ chroot_home_directory }}/{{ item.0.name }}/{{ item.1 }}"
   with_subelements:
     - "{{ users }}"
     - ch_dirs
