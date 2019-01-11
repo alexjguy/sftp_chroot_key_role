@@ -73,7 +73,7 @@
   file:
     state: directory
     force: no
-    mode: 0701
+    mode: 0411
     owner: root
     group: "{{ sftp_group_name }}"
     path: "/{{ chroot_home_directory }}/{{ item.item.name }}"
@@ -104,6 +104,6 @@
     state: directory
     force: no
     mode: 0444
-    path: "{{ item.invocation.module_args.path }}" 
+    path: "{{ item.invocation.module_args.path }}"
   loop: "{{ reg_user_writable_dirs.results }}"
   when: not item.stat.exists
